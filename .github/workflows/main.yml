@@ -20,12 +20,12 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          # Мы передаем переменную APP_ALLOW_ROOT=1 прямо внутрь контейнера
+          # Запускаем bash внутри контейнера и передаем 'yes' напрямую в buildozer
           docker run --rm \
             -v "$(pwd)":/home/user/hostdir \
             -v "$(pwd)/.buildozer":/home/user/.buildozer \
-            -e APP_ALLOW_ROOT=1 \
-            kivy/buildozer android debug
+            --entrypoint /bin/bash \
+            kivy/buildozer -c "yes | buildozer android debug"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
