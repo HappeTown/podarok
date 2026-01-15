@@ -19,8 +19,8 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - name: Build with Buildozer
-        # Добавили @v1 в конце, это исправит твою ошибку
-        uses: ArtemSBulgakov/buildozer-action-v1@v1
+        # ВНИМАНИЕ: Изменили на строчные буквы и добавили версию
+        uses: artembulgakov/buildozer-action@v1
         id: buildozer
         with:
           command: buildozer android debug
