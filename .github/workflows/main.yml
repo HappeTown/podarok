@@ -2,7 +2,7 @@ name: Build KivyMD APK
 
 on:
   push:
-    branches: [ "main", "master" ] # Сработает при загрузке кода в любую из этих веток
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Очистка места на диске (очень важно для Kivy, иначе сборка упадет)
       - name: Free Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -19,17 +18,16 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-      # Основной этап сборки через Buildozer
       - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action-v1
+        # Добавили @v1 в конце, это исправит твою ошибку
+        uses: ArtemSBulgakov/buildozer-action-v1@v1
         id: buildozer
         with:
           command: buildozer android debug
           buildozer_version: master
 
-      # Сохранение готового APK в артефакты
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Podarok_Nastya_KivyMD
+          name: Podarok_Nastya
           path: bin/*.apk
