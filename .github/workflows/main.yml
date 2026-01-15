@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Очистка места на диске, чтобы сборка не упала из-за нехватки памяти
       - name: Free Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -19,12 +18,15 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-      # Запуск сборки через Docker с автоматическим ответом 'y' на все вопросы
       - name: Build with Buildozer
         run: |
-          yes | docker run --rm -v "$(pwd)":/home/user/hostdir -v "$(pwd)/.buildozer":/home/user/.buildozer kivy/buildozer android debug
+          # Мы передаем переменную APP_ALLOW_ROOT=1 прямо внутрь контейнера
+          docker run --rm \
+            -v "$(pwd)":/home/user/hostdir \
+            -v "$(pwd)/.buildozer":/home/user/.buildozer \
+            -e APP_ALLOW_ROOT=1 \
+            kivy/buildozer android debug
 
-      # Сохранение готового APK файла в артефакты GitHub
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
