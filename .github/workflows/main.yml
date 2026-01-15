@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Очистка места на диске (критично для Kivy)
       - name: Free Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -18,16 +19,16 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
+      # Используем официальный и проверенный экшен
       - name: Build with Buildozer
-        # ВНИМАНИЕ: Изменили на строчные буквы и добавили версию
-        uses: artembulgakov/buildozer-action@v1
-        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
           command: buildozer android debug
           buildozer_version: master
 
+      # Сохранение готового APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Podarok_Nastya
+          name: Podarok_Nastya_APK
           path: bin/*.apk
