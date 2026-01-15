@@ -20,12 +20,12 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          # Мы монтируем текущую папку в /home/user/app и запускаем сборку прямо там
+          # Монтируем в hostdir и запускаем через bash внутри этой папки
           docker run --rm \
-            -v "$(pwd)":/home/user/app \
+            -v "$(pwd)":/home/user/hostdir \
             -v "$(pwd)/.buildozer":/home/user/.buildozer \
             --entrypoint /bin/bash \
-            kivy/buildozer -c "yes | buildozer -v android debug -p /home/user/app"
+            kivy/buildozer -c "cd /home/user/hostdir && yes | buildozer android debug"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
