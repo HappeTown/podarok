@@ -1,4 +1,4 @@
-name: Build KivyMD APK
+name: Build APK
 
 on:
   push:
@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Очистка места на диске (критично для Kivy)
       - name: Free Disk Space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -19,16 +18,14 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-      # Используем официальный и проверенный экшен
+      # Собираем напрямую через официальный образ Buildozer, чтобы избежать ошибок с правами доступа
       - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        with:
-          command: buildozer android debug
-          buildozer_version: master
+        run: |
+          docker run --rm -v "$(pwd)":/home/user/hostdir -v "$(pwd)/.buildozer":/home/user/.buildozer kivy/buildozer --version
+          docker run --rm -v "$(pwd)":/home/user/hostdir -v "$(pwd)/.buildozer":/home/user/.buildozer kivy/buildozer android debug
 
-      # Сохранение готового APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Podarok_Nastya_APK
+          name: Podarok_Nastya_Final
           path: bin/*.apk
